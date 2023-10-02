@@ -11,16 +11,22 @@ struct Registro {
 };
 typedef struct Registro reg;
 
+void inicializaHash();
+
+void abreArquivo();
+
+void fechaArquivo();
+
+reg criarRegistro(int codCliente, char* nome);
+
 int hash(int codCliente);
 
-void ler(FILE* tabelaHash, FILE* clientes);
+void ler();
 
-void inicializaHash(FILE* tabelaHash);
+int busca(int chave, int tipo);
 
-int busca(FILE* tabelaHash, FILE* clientes, int chave);
+void inserir(reg pessoa);
 
-void inserir(FILE* tabelaHash, FILE* clientes, reg pessoa);
-
-void remover(FILE* tabelaHash, FILE* clientes, int chave);
+void remover(int chave);
 
 #endif

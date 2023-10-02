@@ -6,11 +6,45 @@
 
 int indiceCliente = 0;
 
+FILE* tabelaHash;
+FILE* clientes; 
+
+void inicializaHash() {
+    int i, valor = -1;
+    for(i=0; i<M; i++){
+        if (fwrite(&valor, sizeof(int), 1, tabelaHash) != 1) {  
+            perror("Erro ao escrever no arquivo");
+        }
+    }
+    fseek(tabelaHash, 0, SEEK_SET);
+    fflush(tabelaHash);
+}
+
+void abreArquivo(){
+    tabelaHash = fopen("tabHash.dat","w+b");
+    clientes = fopen("cliente.dat","w+b");
+    inicializaHash(tabelaHash);
+}
+
+void fechaArquivo(){
+    fclose(tabelaHash);
+    fclose(clientes);
+}
+
 int hash(int codCliente){    
     return codCliente % M;
 }
 
-void ler(FILE* tabelaHash, FILE* clientes){
+reg criarRegistro(int codCliente, char* nome){
+    reg registro;
+    registro.codCliente = codCliente;
+    strcpy(registro.nome,nome);
+    registro.prox = -1;
+    registro.status = 0;
+    return registro;
+}
+
+void ler(){
     int registro_leitura; //auxilixar para ler tabela hash
     int i;
     printf("Tabela Hash:\n");
@@ -34,19 +68,9 @@ void ler(FILE* tabelaHash, FILE* clientes){
     fseek(clientes, 0, SEEK_SET);
 }
 
-void inicializaHash(FILE* tabelaHash) {
-    int i, valor = -1;
-    for(i=0; i<M; i++){
-        if (fwrite(&valor, sizeof(int), 1, tabelaHash) != 1) {  
-            perror("Erro ao escrever no arquivo");
-        }
-    }
-    fseek(tabelaHash, 0, SEEK_SET);
-    fflush(tabelaHash);
-}
-
-int busca(FILE* tabelaHash, FILE* clientes, int chave){
+int busca(int chave, int tipo){ //tipo == 1 busca para remoção
     int indice = hash(chave);
+    reg registroAtual;
     fseek(tabelaHash, indice * sizeof(int), SEEK_SET); //pulando o cursor até o indice da hash adequado
 
     // Lendo valor na hash
@@ -60,13 +84,12 @@ int busca(FILE* tabelaHash, FILE* clientes, int chave){
     // se a posição na hash está vazia
     if(indice != -1){
         //indice = hash(chave); //calculando o indice da hash
-        reg registroAtual;
         fseek(clientes, indice * sizeof(reg), SEEK_SET); //pulando o cursor até o registro adequado na lista de clientes
         fread(&registroAtual, sizeof(reg), 1, clientes); //lendo o primeiro cliente do indice da hash
         
         //loop para andar na lista
         while(registroAtual.codCliente != chave){
-            if(registroAtual.prox == -1) break; //se achar o ultimo da lista o loop termina
+            if(registroAtual.prox == -1 || registroAtual.status == 1) break; //se achar o ultimo da lista o loop termina
             fseek(clientes, registroAtual.prox * sizeof(reg), SEEK_SET);
             fread(&registroAtual, sizeof(reg), 1, clientes);
         }
@@ -80,11 +103,14 @@ int busca(FILE* tabelaHash, FILE* clientes, int chave){
     fseek(tabelaHash, 0, SEEK_SET);
     fseek(clientes, 0, SEEK_SET);
     // se o registro atual for igual a chave retorna -2 (código de cliente encontrado)
+    if(tipo == 1){
+        return registroAtual.indice;
+    }
     return -2;
 }
 
-void inserir(FILE* tabelaHash, FILE* clientes, reg pessoa){
-    int indice = busca(tabelaHash, clientes, pessoa.codCliente);
+void inserir(reg registro){
+    int indice = busca(registro.codCliente, 0); 
     
     // caso em que já existe o código na tabela de cliente
     if(indice == -2){
@@ -94,10 +120,10 @@ void inserir(FILE* tabelaHash, FILE* clientes, reg pessoa){
 
     // caso em que a tabela hash está livre
     if(indice == -1){
-        int indiceHash = hash(pessoa.codCliente);; 
+        int indiceHash = hash(registro.codCliente);; 
 
-        //atualizando os campos da pessoa
-        pessoa.indice = indiceCliente;  pessoa.status = 0; pessoa.prox = -1;
+        //atualizando os campos da registro
+        registro.indice = indiceCliente;  registro.status = 0; registro.prox = -1;
 
         //atualizando hash
         fseek(tabelaHash, indiceHash * sizeof(int), SEEK_SET);
@@ -109,7 +135,7 @@ void inserir(FILE* tabelaHash, FILE* clientes, reg pessoa){
 
         //atualizando tabela de clientes
         fseek(clientes, indiceCliente * sizeof(reg), SEEK_SET);
-        if (fwrite(&pessoa, sizeof(reg) , 1, clientes) != 1) {  
+        if (fwrite(&registro, sizeof(reg) , 1, clientes) != 1) {  
             perror("Erro ao atualizar tabela de clientes\n");
         }
         indiceCliente++; //atualizando indice da tabela de clientes
@@ -117,8 +143,12 @@ void inserir(FILE* tabelaHash, FILE* clientes, reg pessoa){
         fflush(clientes);
     }
     // caso em que há colisão
-    if(indice > -1) {
-        reg aux; //auxliar para alterar o registro na tabela de clientes
+    reg aux; //auxliar para alterar o registro na tabela de clientes
+    fseek(clientes, indice * sizeof(reg), SEEK_SET); //indo até o ultimo registro da lista
+    fread(&aux, sizeof(reg), 1, clientes);
+    // caso em que a lista está toda ocupada
+    if(indice > -1 && aux.status != 1) {
+        
         fseek(clientes, indice * sizeof(reg), SEEK_SET); //indo até o ultimo registro da lista
         fread(&aux, sizeof(reg), 1, clientes);
         aux.prox = indiceCliente; //atualizando o campo prox do registro atual para o registro novo
@@ -127,19 +157,53 @@ void inserir(FILE* tabelaHash, FILE* clientes, reg pessoa){
         //atualizando o registro atual na lista
         fwrite(&aux, sizeof(reg), 1, clientes);
 
-        pessoa.indice = indiceCliente;  pessoa.status = 0; pessoa.prox = -1;
+        registro.indice = indiceCliente;  registro.status = 0; registro.prox = -1;
 
         //atualizando tabela de clientes
         fseek(clientes, indiceCliente * sizeof(reg), SEEK_SET);
-        if (fwrite(&pessoa, sizeof(reg) , 1, clientes) != 1) {  
+        if (fwrite(&registro, sizeof(reg) , 1, clientes) != 1) {  
             perror("Erro ao atualizar tabela de clientes\n");
         }
         indiceCliente++; //atualizando indice da tabela de clientes
         fseek(clientes, 0, SEEK_SET);
         fflush(clientes);
     }
+    // caso em que a lista há espaço na lista
+    else if(aux.status == 1){
+        fseek(clientes, indice * sizeof(reg), SEEK_SET); //indo até o ultimo registro da lista
+        fread(&aux, sizeof(reg), 1, clientes);
+
+        // atualizando registro
+        registro.prox = aux.prox;
+        registro.indice = aux.indice;
+        registro.status = 0;
+    
+        
+        fseek(clientes, indice * sizeof(reg), SEEK_SET); //voltando para o registro atual
+        //atualizando o registro atual na lista
+        fwrite(&registro, sizeof(reg), 1, clientes);
+
+        
+        fseek(clientes, 0, SEEK_SET);
+        fflush(clientes);
+    }
 }
 
-void remover(FILE* tabelaHash, FILE* clientes, int chave){
+void remover(int chave){
+    int indice = busca(chave, 1);
+    reg aux;
 
+    fseek(clientes, indice * sizeof(reg), SEEK_SET); // pulando o curso até o registro desejado 
+    fread(&aux, sizeof(reg) , 1, clientes);  // lendo registro 
+    
+    // excluindo registro
+    aux.status = 1;
+    aux.codCliente = -1;
+    strcpy(aux.nome, "-");
+
+    fseek(clientes, indice * sizeof(reg), SEEK_SET); // pulando o curso até o registro desejado 
+    fwrite(&aux, sizeof(reg), 1, clientes);  // atualizando tabela de clientes
+
+    fseek(clientes, 0, SEEK_SET);
+    fflush(clientes);
 }

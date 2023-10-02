@@ -5,60 +5,33 @@
 #define M 7
 
 int main(){
-    char* tabHash = "tabHash.dat";
-    char* cliente = "cliente.dat";
-    
-    FILE* tabelaHash = fopen(tabHash,"w+b");
-    FILE* clientes = fopen(cliente,"w+b");
-    inicializaHash(tabelaHash);
 
-    reg joao;
-    joao.codCliente = 49;
-    strcpy(joao.nome,"Joao");
-    joao.prox = -1;
-    joao.status = 0;
+    abreArquivo();
 
-    reg maria;
-    maria.codCliente = 59;
-    strcpy(maria.nome,"Maria");
-    maria.prox = -1;
-    maria.status = 0;
+    reg joao = criarRegistro(49,"João");
+    reg maria = criarRegistro(59,"Maria");;
+    reg ana = criarRegistro(103,"Ana");
+    reg jose = criarRegistro(3,"Jose");;
+    reg carla = criarRegistro(51,"Carla");
+    reg bia = criarRegistro(87,"Bia");
+    reg ubiratam = criarRegistro(7, "Ubiratam");
 
-    reg ana;
-    ana.codCliente = 103;
-    strcpy(ana.nome,"Ana");
-    ana.prox = -1;
-    ana.status = 0;
+    inserir(joao);
+    inserir(maria);
+    inserir(ana);
+    inserir(jose);
+    inserir(carla);
+    inserir(bia);
 
-    reg jose;
-    jose.codCliente = 3;
-    strcpy(jose.nome,"Jose");
-    jose.prox = -1;
-    jose.status = 0;
+    ler(); 
 
-    reg carla;
-    carla.codCliente = 51;
-    strcpy(carla.nome,"Carla");
-    carla.prox = -1;
-    carla.status = 0;
+    remover(49);
+    ler();
 
-    reg bia;
-    bia.codCliente = 87;
-    strcpy(bia.nome,"Bia");
-    bia.prox = -1;
-    bia.status = 0;
+    inserir(ubiratam);
+    ler();
 
-    inserir(tabelaHash, clientes, joao);
-    inserir(tabelaHash, clientes, maria);
-    inserir(tabelaHash, clientes, ana);
-    inserir(tabelaHash, clientes, jose);
-    inserir(tabelaHash, clientes, carla);
-    inserir(tabelaHash, clientes, bia);
-
-    ler(tabelaHash, clientes);
-
-    fclose(tabelaHash);
-    fclose(clientes);  
+    fechaArquivo();
 
     return 0;
 }
