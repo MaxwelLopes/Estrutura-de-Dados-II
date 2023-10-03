@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "encadeEx.h"
 #define M 7
 
 int indiceCliente = 0;
@@ -20,6 +21,15 @@ void inicializaHash() {
     fflush(tabelaHash);
 }
 
+reg criarRegistro(int codCliente, char* nome){
+    reg registro;
+    registro.codCliente = codCliente;
+    strcpy(registro.nome,nome);
+    registro.prox = -1;
+    registro.status = 0;
+    return registro;
+}
+
 void abreArquivo(){
     tabelaHash = fopen("tabHash.dat","w+b");
     clientes = fopen("cliente.dat","w+b");
@@ -33,15 +43,6 @@ void fechaArquivo(){
 
 int hash(int codCliente){    
     return codCliente % M;
-}
-
-reg criarRegistro(int codCliente, char* nome){
-    reg registro;
-    registro.codCliente = codCliente;
-    strcpy(registro.nome,nome);
-    registro.prox = -1;
-    registro.status = 0;
-    return registro;
 }
 
 void ler(){
@@ -58,6 +59,7 @@ void ler(){
     fseek(tabelaHash, 0, SEEK_SET);
 
     reg aux; //auxlixar pára ler tabela de clientes
+    fseek(clientes, 0, SEEK_SET);
     printf("indice     codigo        nome        prox       status\n");
     for(i=0; i<indiceCliente; i++){
         if(fread(&aux, sizeof(reg), 1, clientes) != 1) {
@@ -65,6 +67,7 @@ void ler(){
         }
         printf("%5d     %5d     %10s     %7d     %6d\n",aux.indice, aux.codCliente, aux.nome, aux.prox, aux.status);
     }
+    printf("\n");
     fseek(clientes, 0, SEEK_SET);
 }
 
@@ -146,6 +149,7 @@ void inserir(reg registro){
     reg aux; //auxliar para alterar o registro na tabela de clientes
     fseek(clientes, indice * sizeof(reg), SEEK_SET); //indo até o ultimo registro da lista
     fread(&aux, sizeof(reg), 1, clientes);
+    fseek(clientes, 0, SEEK_SET);
     // caso em que a lista está toda ocupada
     if(indice > -1 && aux.status != 1) {
         
@@ -206,4 +210,6 @@ void remover(int chave){
 
     fseek(clientes, 0, SEEK_SET);
     fflush(clientes);
+
+
 }
