@@ -1,13 +1,13 @@
-#ifndef ENCADEEX_H
-#define ENCADEEX_H
+#ifndef ENCADEIN_H
+#define ENCADEIN_H
 #include <stdio.h>
 
 struct Registro {
     int indice;
-    int codCliente;
+    int codCliente; 
     char nome[100];
     int prox;
-    int status;
+    int status; // 0 = liberado e 1 = ocupado
 };
 typedef struct Registro reg;
 
@@ -23,7 +23,7 @@ int hash(int codCliente);
 
 void ler();
 
-int busca(int chave, int tipo);
+int busca(int chave, int *indiceLivre, int tipo);
 
 void inserir(reg pessoa);
 
