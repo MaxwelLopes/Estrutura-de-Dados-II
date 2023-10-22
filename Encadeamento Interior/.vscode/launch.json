@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/mnt/c/Users/maxwe/OneDrive/Área de Trabalho/Encadeamento Interior",
-      "program": "/mnt/c/Users/maxwe/OneDrive/Área de Trabalho/Encadeamento Interior/build/Debug/outDebug",
+      "cwd": "/mnt/c/Users/maxwe/OneDrive/Documentos/GitHub/Estrutura-de-Dados-II/Encadeamento Interior",
+      "program": "/mnt/c/Users/maxwe/OneDrive/Documentos/GitHub/Estrutura-de-Dados-II/Encadeamento Interior/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

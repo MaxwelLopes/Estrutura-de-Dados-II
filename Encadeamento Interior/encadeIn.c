@@ -78,9 +78,9 @@ int busca(int chave, int *indiceLivre, int tipo){
     
     // caso em que a posição da hash está ocupada
     fseek(tabelaHash, indice * sizeof(reg), SEEK_SET); // pulando o cursor até o indice da hash adequado
-    if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
-        perror("Erro ao ler arquivo");
-    }
+    // if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
+    //     perror("Erro ao ler arquivo");
+    // }
     
     // loop para andar na lista
     while(registro_leitura.codCliente != chave){
@@ -144,17 +144,18 @@ int busca(int chave, int *indiceLivre, int tipo){
 void inserir(reg registro){
     int indiceLivre;
     int indice = busca(registro.codCliente, &indiceLivre, INSERCAO);
-    reg registro_leitura;
+    reg registro_anterior;
+    reg registro_novo;
 
     // caso em que a chave já existe na hash
     if(indice == -2){
-        printf("\nJÁ TEEEEEEEEEEEEM! Registro %d não inserido!\n",registro.codCliente);
+        printf("\nJÁ TEM! Registro %d não inserido!\n",registro.codCliente);
         return;
     }
 
     // caso em que a hash está cheia
     if(indice == -3){
-        printf("\nTÁ CHEIOOOOOOOOOO! Registro %d não inserido!\n",registro.codCliente);
+        printf("\nTÁ CHEIO! Registro %d não inserido!\n",registro.codCliente);
         return;
     }
     
@@ -163,11 +164,11 @@ void inserir(reg registro){
         // o registro é inserido diretamente na hash
         indiceLivre = hash(registro.codCliente);
         fseek(tabelaHash, indiceLivre * sizeof(reg), SEEK_SET);
-        if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
+        if(fread(&registro_novo, sizeof(reg), 1, tabelaHash) != 1){
             perror("Erro ao ler no arquivo");
         }
 
-        registro.indice = registro_leitura.indice; registro.prox = registro_leitura.prox;
+        registro.indice = registro_novo.indice; registro.prox = registro_novo.prox;
         fseek(tabelaHash, indiceLivre * sizeof(reg), SEEK_SET);
         if(fwrite(&registro, sizeof(reg), 1, tabelaHash) != 1){
             perror("Erro ao escrever no arquivo");
@@ -179,22 +180,35 @@ void inserir(reg registro){
     // nesse caso a função de busca retorna o registro que vai apontar para o novo registro e atualiza o ponteiro com o indice em que o novo registro deve ficar
     if(indice != -1){
         // indo até o registro anterior para atulizar o campo prox
-        fseek(tabelaHash, indice * sizeof(reg), SEEK_SET);
-        if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
-            perror("Erro ao ler no arquivo");
-        }
-        registro_leitura.prox = indiceLivre;
-        fseek(tabelaHash, indice * sizeof(reg), SEEK_SET);
-        if(fwrite(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
-            perror("Erro ao escrever no arquivo");
-        }
 
         // escrevendo o indece novo na hash
         fseek(tabelaHash, indiceLivre * sizeof(reg), SEEK_SET);
-        if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
+        if(fread(&registro_anterior, sizeof(reg), 1, tabelaHash) != 1){
             perror("Erro ao ler no arquivo");
         }
-        registro.indice = registro_leitura.indice; registro.prox = registro_leitura.prox;
+
+        fseek(tabelaHash, indice * sizeof(reg), SEEK_SET);
+        if(fread(&registro_novo, sizeof(reg), 1, tabelaHash) != 1){
+            perror("Erro ao ler no arquivo");
+        }
+
+        if(registro_anterior.prox == -1){
+            registro_novo.prox = indiceLivre;
+        }
+
+        fseek(tabelaHash, indice * sizeof(reg), SEEK_SET);
+        if(fwrite(&registro_novo, sizeof(reg), 1, tabelaHash) != 1){
+            perror("Erro ao escrever no arquivo");
+        }
+
+
+        registro.indice = registro_anterior.indice; 
+        registro.prox = registro_anterior.prox;
+
+        if(registro_anterior.prox == indiceLivre){
+            registro.prox = -1;
+        }
+
         fseek(tabelaHash, indiceLivre * sizeof(reg), SEEK_SET);
         if(fwrite(&registro, sizeof(reg), 1, tabelaHash) != 1){
             perror("Erro ao escrever no arquivo");
@@ -202,87 +216,6 @@ void inserir(reg registro){
         fflush(tabelaHash);
     }
 }
-    
-
-// int busca(int chave){ //achou end   - não achou posição livre || -1
-//     int indice = hash(chave);
-//     int achou = -1; 
-//     int indiceLivre;
-//     reg registro_leitura;
-//     reg aux_registro;
-
-//     fseek(tabelaHash, indice * sizeof(reg), SEEK_SET);
-    
-//     while(achou == -1){
-//         if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){ // Avançando na lista
-//             perror("Erro ao ler no arquivo");
-//         }
-        
-//         //posição liberada (Guardando para usar mais tarde aiiiin gay)
-//         if(registro_leitura.status == 0){
-//             indiceLivre = registro_leitura.indice;
-//         }
-
-        
-//         if((registro_leitura.codCliente == chave) && (registro_leitura.status == 1)){
-//             achou = 1;
-//             return registro_leitura.indice;
-//         } 
-        
-    
-//         else if(fread(&aux_registro, sizeof(reg) , 1, tabelaHash) == 1){
-//             if(aux_registro.status == 0){
-                
-//             }
-//             //chegou no fim da lista e não achou merda nenhuma
-//             achou = 0; // Não achou (achou = 0)
-//             indice = indiceLivre; // está colocando a temp no end
-//         }
-//         // else{
-//         //     //avança na lista
-//         //     //utilizar fseek ou registro_leitura.indice = registro_leitura.prox ????????
-//         // }
-//     }
-    
-//     return indice;
-//     // if(registro_leitura.codCliente == chave)
-//     // // Achou a chave
-//     // if(registro_leitura.codCliente == -1){
-        
-//     //     reg aux;
-//     //     fseek(tabelaHash, indiceAnt * sizeof(reg), SEEK_SET);
-//     //     if(fread(&aux, sizeof(reg), 1, tabelaHash) == 1){
-//     //         perror("Erro ao ler no arquivo");
-//     //     }
-//     //     aux.prox = indiceAnt;
-//     // }
-//     // printf("\n DEU RUIM :C\n");
-//     // return -1;
-// }
-
-// void inserir(reg registro){
-//     int indice = hash(registro.codCliente);
-//     reg registro_leitura;
-
-//     fseek(tabelaHash, 0, SEEK_SET);
-//     if(fread(&registro_leitura, sizeof(reg), 1, tabelaHash) != 1){
-//         perror("Erro ao ler no arquivo");
-//     }
-
-//     if(registro_leitura.codCliente == -1){
-//         registro.indice = indice;
-//         registro.status = 1;
-//         fseek(tabelaHash, indice * sizeof(reg), SEEK_SET);
-//         if(fwrite(&registro, sizeof(reg), 1, tabelaHash) != 1){
-//             perror("Erro ao escrever no arquivo");
-//         }
-//         indiceCliente++;
-//         fflush(tabelaHash);
-//     }
-//     else{
-        
-//     }
-// }
 
 void remover(int chave){
     int null;
@@ -309,6 +242,6 @@ void remover(int chave){
     }
     // caso em que não foi encontrado a chave na hash
     else{
-        printf("Erro: Registro %d não removido\n",chave);
+        printf("NÂO TEM! Registro %d não removido\n",chave);
     }
 }
