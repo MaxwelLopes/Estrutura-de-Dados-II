@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Tentativa_Linear.h"
-#define INSERCAO
+#define INSERCAO 1
 
 void inicializa(Hash *tab_hash){
     int i;
@@ -79,7 +79,7 @@ Hash aloca(int codCliente, char *nome){
 
 void inserir(Hash *tab_hash, int codCliente, char *nome){
     int achou; // flag para saber se a chave do cliente já existe na tabela hash
-    int endereco = busca(tab_hash, codCliente, &achou, INSERCAO); 
+    int endereco = busca(tab_hash, codCliente, &achou, INSERCAO);
     
     // caso em que o codigo do cliente não existe na tabela hash e o registro pode ser inserido
     if(!achou){
