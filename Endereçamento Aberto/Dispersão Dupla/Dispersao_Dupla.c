@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Tentativa_Linear.h"
+#include "Dispersao_Dupla.h"
 
 void inicializa(Hash *tab_hash){
     int i;
@@ -11,11 +11,17 @@ void inicializa(Hash *tab_hash){
 }
 
 int hash_linha(int x){
+    //printf("hash' = %d\n", x % M);
     return x % M;
 }
 
+int hash_linha_linha(int x){
+    //printf("hash'' = %d\n", 7 - (x % 7));
+    return 7 - (x % 7);
+}
+
 int hash(int x, int k){
-    return (hash_linha(x) + k) % M;
+    return (hash_linha(x) + k*hash_linha_linha(x)) % M;
 }
 
 int busca(Hash *tab_hash, int x, int *achou){

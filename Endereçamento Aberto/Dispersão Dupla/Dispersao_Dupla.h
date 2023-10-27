@@ -15,6 +15,8 @@ typedef cliente *Hash;
 
 int hash_linha(int x);
 
+int hash_linha_linha(int x);
+
 int hash(int x, int k);
 
 int busca(Hash *tab_hash, int x, int *achou);

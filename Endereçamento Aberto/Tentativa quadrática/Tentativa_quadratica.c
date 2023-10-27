@@ -29,10 +29,15 @@ int busca(Hash *tab_hash, int x, int *achou){
     int endereco = -1;
     int pos_livre = -1;
     int k = 0;
+    int colisao = 0;
 
     //loop para percorrer a hash
     while(k < M){
         endereco = hash(x, k);
+
+        if(tab_hash[endereco] != NULL){
+            colisao++;
+        }
 
         // caso em que encontrou a chave
         if(tab_hash[endereco] != NULL && tab_hash[endereco]->codCliente == x){
@@ -51,6 +56,7 @@ int busca(Hash *tab_hash, int x, int *achou){
             k++; //continua a procura
         }
     }
+    printf("\n%d colisões\n",colisao);
     // Caso em que a chave foi encontrada na hash
     if(*achou){
         return endereco;

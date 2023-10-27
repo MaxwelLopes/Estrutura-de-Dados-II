@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Tentativa_Quadratica.c"
+#include "Dispersao_Dupla.c"
 
 int main(){
     Hash tab_hash[M];

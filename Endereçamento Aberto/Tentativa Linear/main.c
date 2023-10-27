@@ -8,12 +8,15 @@ int main(){
     inicializa(tab_hash);
 
     inserir(tab_hash,2, "max");
-
     imprimir(tab_hash);
-    
-    remover(tab_hash, 2);
 
-    inserir(tab_hash,2, "max");
-
+    inserir(tab_hash,12, "josue");
     imprimir(tab_hash);
+
+    inserir(tab_hash,22, "luiz");
+    imprimir(tab_hash);
+
+    inserir(tab_hash,32, "guilherme");
+    imprimir(tab_hash);
+
 }
