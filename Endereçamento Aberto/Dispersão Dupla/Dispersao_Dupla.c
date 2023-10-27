@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Dispersao_Dupla.h"
+#define INSERCAO 1
 
 void inicializa(Hash *tab_hash){
     int i;
@@ -24,7 +25,7 @@ int hash(int x, int k){
     return (hash_linha(x) + k*hash_linha_linha(x)) % M;
 }
 
-int busca(Hash *tab_hash, int x, int *achou){
+int busca(Hash *tab_hash, int x, int *achou, int tipo){
     *achou = 0;
     int endereco = -1;
     int pos_livre = -1;
@@ -51,6 +52,9 @@ int busca(Hash *tab_hash, int x, int *achou){
                 // guardando o endereço livre caso ele seja o primeiro
                 if(pos_livre == -1){
                     pos_livre = endereco;
+                    if(tipo){
+                        k = M;
+                    }
                 }
             }
             k++; //continua a procura
@@ -81,7 +85,7 @@ Hash aloca(int codCliente, char *nome){
 
 void inserir(Hash *tab_hash, int codCliente, char *nome){
     int achou; // flag para saber se a chave do cliente já existe na tabela hash
-    int endereco = busca(tab_hash, codCliente, &achou); 
+    int endereco = busca(tab_hash, codCliente, &achou, INSERCAO); 
     
     // caso em que o codigo do cliente não existe na tabela hash e o registro pode ser inserido
     if(!achou){
@@ -103,7 +107,7 @@ void inserir(Hash *tab_hash, int codCliente, char *nome){
 
 void remover(Hash *tab_hash, int x){
     int achou;
-    int endereco = busca(tab_hash, x, &achou);
+    int endereco = busca(tab_hash, x, &achou, !INSERCAO);
 
     if(achou){
         free(tab_hash[endereco]);
