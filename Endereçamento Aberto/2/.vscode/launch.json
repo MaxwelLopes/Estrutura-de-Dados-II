@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/mnt/c/Users/maxwe/OneDrive/Documentos/GitHub/Estrutura-de-Dados-II/Endereçamento Aberto/Tentativa Linear",
-      "program": "/mnt/c/Users/maxwe/OneDrive/Documentos/GitHub/Estrutura-de-Dados-II/Endereçamento Aberto/Tentativa Linear/build/Debug/outDebug",
+      "cwd": "/mnt/c/Users/maxwe/OneDrive/Documentos/GitHub/Estrutura-de-Dados-II/Endereçamento Aberto/Tentativa Quadrática",
+      "program": "/mnt/c/Users/maxwe/OneDrive/Documentos/GitHub/Estrutura-de-Dados-II/Endereçamento Aberto/Tentativa Quadrática/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

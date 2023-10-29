@@ -2,21 +2,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Tentativa_Quadratica.c"
+#include "benchmark.c"
 
 int main(){
-    Hash tab_hash[M];
-    inicializa(tab_hash);
-
-    inserir(tab_hash,2, "max");
-    imprimir(tab_hash);
-
-    inserir(tab_hash,12, "josue");
-    imprimir(tab_hash);
-
-    inserir(tab_hash,22, "luiz");
-    imprimir(tab_hash);
-
-    inserir(tab_hash,32, "guilherme");
-    imprimir(tab_hash);
-
+    int tamanhoTabela = 100; 
+    Hash tab_hash[tamanhoTabela];
+    float fator_carga = 0.7;
+    int numero_registro;
+    int numero_teste = 100;
+    
+    inicializa(tab_hash, tamanhoTabela);
+    benchmarkInsercao(tab_hash, fator_carga, &numero_registro, tamanhoTabela, numero_teste);
 }

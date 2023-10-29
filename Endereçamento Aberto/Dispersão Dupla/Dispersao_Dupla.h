@@ -1,33 +1,34 @@
 #ifndef ENCADEIN_H
 #define ENCADEIN_H
 #include <stdio.h>
-
-#define M 10
+#include <stdbool.h>
 
 struct Cliente {
     int codCliente;
-    char nome[100];
 };
 
 typedef struct Cliente cliente;
 
 typedef cliente *Hash;
 
-int hash_linha(int x);
+bool is_prime(int n);
 
-int hash_linha_linha(int x);
+int find_previous_prime(int X);
 
-int hash(int x, int k);
+int hash_linha(int x, int tamanhoTabela);
 
-int busca(Hash *tab_hash, int x, int *achou, int tipo);
+int hash_linha_linha(int x, int PRIMO);
 
-Hash aloca(int codCliente, char *nome);
+int hash(int x, int k, int tamanhoTabela, int PRIMO);
 
-void inserir(Hash *tab_hash, int codCliente, char *nome);
+int busca(Hash *tab_hash, int tamanhoTabela, int x, int *achou, int *colisao, int PRIMO);
 
-void remover(Hash *tab_hash, int x);
+Hash aloca(int codCliente);
 
-void imprimir(Hash *tab_hash);
+void inserir(Hash *tab_hash, int codCliente, int *numRegistro, int *colisao, int tamanhoTabela, int PRIMO);
 
+void remover(Hash *tab_hash, int tamanhoTabela, int x, int PRIMO);
+
+void imprimir(Hash *tab_hash, int tamanhoTabela);
 
 #endif

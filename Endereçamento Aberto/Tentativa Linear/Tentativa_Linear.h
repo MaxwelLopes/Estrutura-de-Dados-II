@@ -2,30 +2,26 @@
 #define ENCADEIN_H
 #include <stdio.h>
 
-#define M 10
-
 struct Cliente {
     int codCliente;
-    char nome[100];
 };
 
 typedef struct Cliente cliente;
 
 typedef cliente *Hash;
 
-int hash_linha(int x);
+int hash_linha(int x, int tamanhoTabela);
 
-int hash(int x, int k);
+int hash(int x, int tamanhoTabela ,int k);
 
-int busca(Hash *tab_hash, int x, int *achou, int tipo);
+int busca(Hash *tab_hash, int tamanhoTabela, int x, int *achou, int *colisao);
 
-Hash aloca(int codCliente, char *nome);
+Hash aloca(int codCliente);
 
-void inserir(Hash *tab_hash, int codCliente, char *nome);
+void inserir(Hash *tab_hash, int codCliente, int *numRegistro, int *colisao, int tamanhoTabela);
 
-void remover(Hash *tab_hash, int x);
+void remover(Hash *tab_hash, int tamanhoTabela, int *numRegistro, int x);
 
-void imprimir(Hash *tab_hash);
-
+void imprimir(Hash *tab_hash, int tamanhoTabela);
 
 #endif
