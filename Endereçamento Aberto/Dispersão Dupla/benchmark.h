@@ -3,6 +3,6 @@
 #include <stdio.h>
 #include "Tentativa_Linear.c"
 
-void benchmarkInsercao(Hash *tabela, float fatorCarga, int *numRegistros, int tamanhoTabela, int numeroTeste);
+void benchmarkInsercao(Hash *tabela, float fatorCarga, int *numRegistros, int tamanhoTabela, int numeroTeste, int PRIMO);
 
 #endif

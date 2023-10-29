@@ -81,9 +81,9 @@ int busca(Hash *tab_hash, int tamanhoTabela, int x, int *achou, int *colisao, in
         }
 
         // caso em que encontrou a chave
-        if(tab_hash[endereco] != NULL && tab_hash[endereco]->codCliente == x){
+        if(tab_hash[endereco] != NULL && tab_hash[endereco]->codCliente == x ){
             *achou = 1;
-            *colisao = 0;
+            *colisao = *colisao - 1;
             k = tamanhoTabela; // forçar saída do loop
         }
         // caso em que não enctou a chave

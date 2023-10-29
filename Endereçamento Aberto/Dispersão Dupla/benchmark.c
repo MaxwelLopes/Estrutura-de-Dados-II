@@ -4,9 +4,8 @@
 #include "benchmark.h"
 #include <sys/time.h>
 
-void benchmarkInsercao(Hash *tabela, float fatorCarga, int *numRegistros, int tamanhoTabela, int numeroTeste){
-    int PRIMO =  find_previous_prime(tamanhoTabela);
-    printf("\nprimo: %d\n",PRIMO);
+void benchmarkInsercao(Hash *tabela, float fatorCarga, int *numRegistros, int tamanhoTabela, int numeroTeste, int PRIMO){
+    //printf("\nprimo: %d\n",PRIMO);
     *numRegistros = 0;
     int colisao = 0;
     double tempo_inicio, tempo_final;
@@ -36,7 +35,7 @@ void benchmarkInsercao(Hash *tabela, float fatorCarga, int *numRegistros, int ta
         tempo_inicio = clock();
         
         while((((float)*numRegistros)/(float)tamanhoTabela) < fatorCarga){
-            chave = rand() % tamanhoTabela * 2;
+            chave = rand();
             //printf("\nchave: %d\n",chave);
             
             escolhaAleatoria = rand() % 2;
