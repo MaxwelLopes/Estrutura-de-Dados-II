@@ -5,8 +5,8 @@
 #include "benchmark.c"
 
 int main(){
-    int tamanhoTabela = 10000;
-    int PRIMO =  find_previous_prime(tamanhoTabela);
+    int tamanhoTabela = 100;
+    int PRIMO = 43;
     Hash tab_hash[tamanhoTabela];
     float fator_carga = 0.9;
     int numero_registro;

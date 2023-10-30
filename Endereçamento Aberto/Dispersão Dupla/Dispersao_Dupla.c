@@ -2,48 +2,6 @@
 #include <stdlib.h>
 #include "Dispersao_Dupla.h"
 
-bool is_prime(int n) {
-    if (n <= 1) {
-        return false;
-    }
-    if (n <= 3) {
-        return true;
-    }
-    if (n % 2 == 0 || n % 3 == 0) {
-        return false;
-    }
-    for (int i = 5; i * i <= n; i += 6) {
-        if (n % i == 0 || n % (i + 2) == 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-int find_previous_prime(int X) {
-    if (X <= 2) {
-        // Não há primos menores que 2.
-        return -1; // Indicar que não há primo anterior.
-    }
-    if (X == 3) {
-        // O único primo anterior a 3 é 2.
-        return 2;
-    }
-    if (X % 2 == 0) {
-        X--; // Se X for par, tornamos X ímpar.
-    } else {
-        X -= 2; // Se X for ímpar, subtrair 2 para torná-lo par.
-    }
-
-    while (X > 1) {
-        if (is_prime(X)) {
-            return X;
-        }
-        X -= 2; // Teste apenas números ímpares.
-    }
-    return -1; // Se não for encontrado, retornar -1.
-}
-
 void inicializa(Hash *tab_hash, int tamanhoTabela){
     int i;
 
@@ -58,7 +16,7 @@ int hash_linha(int x, int tamanhoTabela){
 }
 
 int hash_linha_linha(int x, int PRIMO){
-    //printf("hash'' = %d\n", 7 - (x % 7));
+    //printf("hash'' = %d\n", PRIMO);
     return PRIMO - (x % PRIMO);
 }
 

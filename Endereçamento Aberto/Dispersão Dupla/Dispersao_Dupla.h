@@ -1,7 +1,6 @@
 #ifndef ENCADEIN_H
 #define ENCADEIN_H
 #include <stdio.h>
-#include <stdbool.h>
 
 struct Cliente {
     int codCliente;
@@ -10,10 +9,6 @@ struct Cliente {
 typedef struct Cliente cliente;
 
 typedef cliente *Hash;
-
-bool is_prime(int n);
-
-int find_previous_prime(int X);
 
 int hash_linha(int x, int tamanhoTabela);
 
